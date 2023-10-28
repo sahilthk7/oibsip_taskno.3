@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahil's To-Do App</title>
+    <style>
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.app {
+    max-width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #67536b;
+}
+
+input[type="text"] {
+    width: 80%;
+    padding: 12px;
+    border: 2px solid #d9d9d9;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-right: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    padding: 12px 20px;
+    background-color: #67536b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #d400ff;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    font-size: 20px;
+    position: relative;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+li:hover {
+    background-color: #e5e5e5;
+    transform: scale(1.01);
+}
+
+.completed {
+    background-color: #d3ffd3;
+    text-decoration: line-through;
+}
+
+li .datetime {
+    font-size: 16px;
+    color: #777;
+}
+
+li .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.actions button {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.complete-button {
+    background-color: #5cb85c;
+    color: #fff;
+}
+
+complete-button:hover {
+    background-color: #449d44;
+}
+
+delete-button {
+    background-color: #d9534f;
+    color: #fff;
+}
+
+delete-button:hover {
+    background-color: #c9302c;
+}
+#addTask {
+    margin:10px
+}
+    </style>
+</head>
+<body>
+    <div class="app">
+        <h1>To-Do List</h1>
+        <input type="text" id="taskInput" placeholder="Add a new task..."> 
+        <button id="addTask">Add</button>
+        <div id="tasks">
+            <div id="pendingTasks">
+                <h2>Pending Tasks</h2>
+                <ul id="pendingList"></ul>
+            </div>
+            <div id="completedTasks">
+                <h2>Completed Tasks</h2>
+                <ul id="completedList"></ul>
+            </div>
+        </div>
+    </div>
+    <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    const taskInput = document.getElementById("taskInput");
+    const addTaskButton = document.getElementById("addTask");
+    const pendingList = document.getElementById("pendingList");
+    const completedList = document.getElementById("completedList");
+
+    addTaskButton.addEventListener("click", function () {
+        const taskText = taskInput.value.trim();
+        if (taskText !== "") {
+            createTaskElement(taskText);
+            taskInput.value = "";
+        }
+    });
+
+    taskInput.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            addTaskButton.click();
+        }
+    });
+
+    function createTaskElement(taskText) {
+        const li = document.createElement("li");
+        const date = new Date();
+        const datetime = date.toLocaleString();
+
+        li.innerHTML = `
+            <span>${taskText}</span>
+            <span>${datetime}</span>
+            <button class="complete">Complete</button>
+            <button class="delete">Delete</button>
+        `;
+
+        const completeButton = li.querySelector(".complete");
+        const deleteButton = li.querySelector(".delete");
+
+        completeButton.addEventListener("click", function () {
+            li.classList.toggle("completed");
+            li.querySelector(".complete").textContent =
+                li.classList.contains("completed") ? "Undo" : "Complete";
+            moveTask(li);
+        });
+
+        deleteButton.addEventListener("click", function () {
+            li.remove();
+        });
+
+        pendingList.appendChild(li);
+    }
+
+    function moveTask(taskElement) {
+        const isCompleted = taskElement.classList.contains("completed");
+        if (isCompleted) {
+            completedList.appendChild(taskElement);
+        } else {
+            pendingList.appendChild(taskElement);
+        }
+    }
+});
+
+    </script>
+</body>
+</html>
